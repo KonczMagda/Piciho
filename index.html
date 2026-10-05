@@ -83,7 +83,503 @@ button.card p{margin:0;color:var(--muted);font-size:.95rem}
   <iframe id="lessonframe" title="Lecke"></iframe>
 </div>
 
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A lelki folyamatok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F7; --surface:#FFFFFF; --ink:#1B2140; --muted:#586082; --line:#D3D9EA;
+  --teal:#0E7C86; --violet:#5B45D6; --coral:#D6453D; --grey:#7F86A3;
+  --blend:multiply; --focus:#5B45D6;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12162B; --surface:#1B2140; --ink:#EDF0FA; --muted:#A3AACB; --line:#2F3760;
+    --teal:#4CC3CE; --violet:#9C8CFF; --coral:#FF8A7F; --grey:#8F96B5; --blend:screen; --focus:#B7ABFF;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12162B; --surface:#1B2140; --ink:#EDF0FA; --muted:#A3AACB; --line:#2F3760;
+  --teal:#4CC3CE; --violet:#9C8CFF; --coral:#FF8A7F; --grey:#8F96B5; --blend:screen; --focus:#B7ABFF;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
+  font-family:var(--body);font-size:1.0625rem;line-height:1.5;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.05;letter-spacing:-.02em}
+h1{font-size:clamp(2.6rem,8vw,5.2rem);font-weight:800}
+h2{font-size:clamp(1.8rem,4.6vw,3rem);font-weight:800}
+p{margin:0}
+.g0{--c:var(--teal)} .g1{--c:var(--violet)} .g2{--c:var(--coral)} .g3{--c:var(--grey)}
+
+/* deck */
+.stage{flex:1;min-height:0;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:clamp(18px,4vw,56px);display:none}
+.slide.active{display:flex;flex-direction:column;animation:in .25s ease-out}
+@keyframes in{from{opacity:0}to{opacity:1}}
+.wrap{width:100%;max-width:1040px;margin:auto}
+.lead{font-size:clamp(1.1rem,2.4vw,1.4rem);max-width:34em;color:var(--muted)}
+.stack>*+*{margin-top:1.1rem}
+.top{margin-bottom:clamp(16px,3vw,32px)}
+.top p{margin-top:.7rem;color:var(--muted);max-width:40em}
+
+/* bottom bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px clamp(10px,3vw,32px);
+  background:var(--surface);border-top:1px solid var(--line)}
+.nav{font-weight:700;padding:.6em 1em;border-radius:999px;min-height:44px}
+.nav:hover:not(:disabled){background:var(--bg)}
+.nav:disabled{opacity:.35;cursor:default}
+.dots{display:flex;flex-wrap:wrap;justify-content:center}
+.dot{width:24px;height:44px;position:relative}
+.dot::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:99px;background:var(--line);
+  transform:translate(-50%,-50%);transition:width .25s,background .25s}
+.dot[aria-current="true"]::after{width:22px;background:var(--violet)}
+@media (max-width:480px){.nav{padding:.6em .6em}}
+
+.btn{display:inline-block;font-weight:700;padding:.75em 1.4em;border-radius:999px;background:var(--surface);border:2px solid var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn:hover{transform:translateY(-1px)}
+.hint{font-size:.9rem;color:var(--muted)}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:.5em;padding:.45em .9em;border-radius:999px;font-weight:700;font-size:1rem;
+  background:color-mix(in srgb,var(--c) 17%,var(--surface));color:var(--ink);line-height:1.2}
+.chip::before{content:"";flex:none;width:.65em;height:.65em;border-radius:50%;background:var(--c)}
+
+/* venn */
+.venn{position:relative;width:300px;height:255px;max-width:100%;margin:0 auto}
+.venn i{position:absolute;display:block;width:150px;height:150px;border-radius:50%;mix-blend-mode:var(--blend);opacity:.92;
+  transition:width .8s cubic-bezier(.2,.8,.2,1),height .8s cubic-bezier(.2,.8,.2,1),left .8s cubic-bezier(.2,.8,.2,1),top .8s cubic-bezier(.2,.8,.2,1)}
+.venn .v1{left:15px;top:10px;background:var(--teal)}
+.venn .v2{left:135px;top:10px;background:var(--violet)}
+.venn .v3{left:75px;top:105px;background:var(--coral)}
+.venn.split i{width:86px;height:86px;top:28px}
+.venn.split .v1{left:4px} .venn.split .v2{left:107px} .venn.split .v3{left:210px}
+.vl{position:absolute;top:128px;width:94px;text-align:center;font-size:.82rem;line-height:1.25;font-weight:700;opacity:0;transition:opacity .4s}
+.venn.split .vl{opacity:1;transition-delay:.45s}
+.hero{display:grid;gap:clamp(24px,5vw,64px);align-items:center}
+@media (min-width:820px){.hero{grid-template-columns:1.25fr .75fr}.hero .venn{width:340px;height:290px;transform:scale(1.12)}
+  .hero .venn i{width:170px;height:170px}.hero .venn .v1{left:16px}.hero .venn .v2{left:154px}.hero .venn .v3{left:85px;top:118px}}
+.hero-venn i{animation:gather 1.2s cubic-bezier(.2,.8,.2,1) both}
+.hero-venn .v1{--dx:-70px;--dy:-40px} .hero-venn .v2{--dx:70px;--dy:-40px} .hero-venn .v3{--dx:0px;--dy:70px}
+@keyframes gather{from{transform:translate(var(--dx),var(--dy))}to{transform:none}}
+
+/* dialogue */
+.chat{display:flex;flex-direction:column;gap:12px;max-width:760px}
+.msg{max-width:min(92%,34em);padding:.8em 1.1em;border-radius:20px;background:var(--surface);line-height:1.9}
+.msg b{display:block;font-family:var(--display);font-size:.9rem;line-height:1.2;margin-bottom:.15em;color:var(--muted)}
+.msg.p{align-self:flex-start;border-bottom-left-radius:6px}
+.msg.j{align-self:flex-end;border-bottom-right-radius:6px;background:color-mix(in srgb,var(--violet) 10%,var(--surface))}
+.term{border-bottom:2px dashed var(--muted);padding:.1em .05em;font-weight:700;border-radius:4px 4px 0 0}
+.term:hover{background:color-mix(in srgb,var(--muted) 14%,transparent)}
+.term.found{border-bottom:3px solid var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.term.found::after{content:" " attr(data-proc);font-size:.72rem;font-weight:700;color:var(--c);filter:brightness(.92);vertical-align:.35em}
+.dlg{display:grid;gap:24px;align-items:start}
+@media (min-width:900px){.dlg{grid-template-columns:1.3fr 1fr}.info{position:sticky;top:0}}
+.info{background:var(--surface);border-radius:20px;padding:1.2rem 1.3rem;min-height:9.5rem}
+.info .count{font-family:var(--display);font-weight:800;font-size:1.6rem;margin-bottom:.5rem}
+.info p{margin-top:.7rem}
+.info .empty{color:var(--muted)}
+
+/* accordion */
+.acc{max-width:760px;border-top:1px solid var(--line)}
+.acc-item{border-bottom:1px solid var(--line)}
+.acc-q{display:flex;width:100%;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:1.1rem .2rem;
+  font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,3vw,1.7rem);line-height:1.15;letter-spacing:-.01em}
+.acc-q::after{content:"+";font-family:var(--body);font-weight:400;font-size:1.8rem;line-height:1;transition:transform .25s;color:var(--violet)}
+.acc-q[aria-expanded="true"]::after{transform:rotate(45deg)}
+.acc-a{padding:0 .2rem 1.2rem;color:var(--muted);max-width:36em}
+.acc-a[hidden]{display:none}
+
+/* tabs / groups */
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.2rem}
+.tab{padding:.6em 1.1em;border-radius:14px;font-weight:700;background:var(--surface);border:2px solid transparent;text-align:left}
+.tab::before{content:"";display:inline-block;width:.7em;height:.7em;border-radius:50%;background:var(--c);margin-right:.55em}
+.tab[aria-selected="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--surface))}
+.rows{max-width:760px}
+.row{display:grid;grid-template-columns:9.5rem 1fr;gap:6px 18px;padding:.85rem 0;border-top:1px solid var(--line);align-items:baseline}
+.row:last-child{border-bottom:1px solid var(--line)}
+.row b{font-family:var(--display);font-size:1.3rem;letter-spacing:-.01em}
+.row span{color:var(--muted)}
+.grp-note{font-size:1.15rem;margin-bottom:.8rem;max-width:34em}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+
+/* board */
+.toggle{display:inline-flex;background:var(--surface);border-radius:999px;padding:4px;margin-bottom:1.1rem}
+.toggle button{padding:.55em 1.2em;border-radius:999px;font-weight:700}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.board{display:grid;gap:10px}
+.bin{display:grid;grid-template-columns:13rem 1fr;gap:10px 18px;align-items:center;background:var(--surface);border-radius:18px;padding:.9rem 1.1rem;min-height:4.6rem}
+.bin h3{font-size:1.1rem;line-height:1.2}
+.bin h3 small{display:block;font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);letter-spacing:0;margin-top:.15rem}
+.bin .cs{display:flex;flex-wrap:wrap;gap:8px}
+.bin.out:not(:has(.chip)){display:none}
+.bin.out{background:transparent;border:2px dashed var(--line)}
+.cap{margin-top:1rem;max-width:44em;color:var(--muted);min-height:3.2em}
+@media (max-width:640px){.bin{grid-template-columns:1fr}}
+
+/* game */
+.game{max-width:640px}
+.gq{background:var(--surface);border-radius:24px;padding:clamp(1.1rem,3vw,2rem)}
+.gprog{display:flex;justify-content:space-between;color:var(--muted);font-weight:700;margin-bottom:1.2rem}
+.gword{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,8vw,3.6rem);line-height:1;letter-spacing:-.02em;margin-bottom:1.3rem;overflow-wrap:anywhere}
+.opts{display:grid;gap:8px}
+.opt{padding:.8em 1em;border-radius:14px;font-weight:700;text-align:left;background:color-mix(in srgb,var(--c) 14%,var(--surface));display:flex;gap:.7em;align-items:center}
+.opt::before{content:"";flex:none;width:.7em;height:.7em;border-radius:50%;background:var(--c)}
+.opt:hover:not(:disabled){background:color-mix(in srgb,var(--c) 26%,var(--surface))}
+.opt:disabled{cursor:default}
+.opt.right{background:color-mix(in srgb,var(--c) 38%,var(--surface))}
+.opt.right::after{content:"helyes";margin-left:auto;font-size:.85rem}
+.opt.wrong{opacity:.5;text-decoration:line-through}
+.fb{margin-top:1rem;min-height:3.4em}
+.fb b{font-family:var(--display)}
+.score{font-family:var(--display);font-weight:800;font-size:clamp(3rem,12vw,5.5rem);line-height:1;letter-spacing:-.03em}
+
+/* summary */
+.sum{max-width:760px;list-style:none;padding:0;margin:0}
+.sum li{display:grid;grid-template-columns:1.1rem 1fr;gap:14px;padding:1rem 0;border-top:1px solid var(--line);font-size:1.15rem}
+.sum li:last-child{border-bottom:1px solid var(--line)}
+.sum li::before{content:"";width:.9rem;height:.9rem;border-radius:50%;background:var(--c);margin-top:.4em}
+.sum b{font-family:var(--display)}
+
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+
+<!-- 1. Cím -->
+<section class="slide active" data-title="Címlap">
+  <div class="wrap hero">
+    <div class="stack">
+      <h1>A lelki folyamatok</h1>
+      <p class="lead">Honnan tudjuk, mi zajlik egy másik emberben? És hogyan magyarázzuk vele azt, amit tesz?</p>
+      <p><button class="btn primary" data-go="1">Kezdjük</button></p>
+      <p class="hint">Lapozás: nyílbillentyűk, gombok vagy húzás.</p>
+    </div>
+    <div class="venn hero-venn" aria-hidden="true"><i class="v1"></i><i class="v2"></i><i class="v3"></i></div>
+  </div>
+</section>
+
+<!-- 2. Párbeszéd -->
+<section class="slide" data-title="Hétköznapi párbeszéd">
+  <div class="wrap">
+    <div class="top">
+      <h2>Egy hétköznapi párbeszéd</h2>
+      <p>Keresd meg azokat a kifejezéseket, amelyek lelki folyamatokra utalnak, és a beszélők ezekből magyarázzák a viselkedést. Koppints rájuk!</p>
+    </div>
+    <div class="dlg">
+      <div class="chat">
+        <div class="msg p"><b>Péter</b>Nem <button class="term" data-k="beszeltel">beszéltél</button> Marival? Azt <button class="term" data-k="mondta">mondta</button>, beugrik hozzám.</div>
+        <div class="msg j"><b>Judit</b>Ma még nem is láttam.</div>
+        <div class="msg p"><b>Péter</b><button class="term" data-k="lattad">Láttad</button>, csak <button class="term" data-k="emlekezet">nem emlékszel rá</button>. Ott ment előtted a portánál.</div>
+        <div class="msg j"><b>Judit</b>Igen, tényleg, <button class="term" data-k="haragudj">ne haragudj</button>. <button class="term" data-k="tortent">Talán valami történt vele</button>, olyan <button class="term" data-k="rosszkedvu">rosszkedvűnek tűnt</button>.</div>
+        <div class="msg p"><b>Péter</b><button class="term" data-k="nemjon">Akkor lehet, hogy ma nem is jön</button>. <button class="term" data-k="vigasz">Majd megvigasztalom</button> legközelebb. <button class="term" data-k="erzekeny">Olyan érzékeny.</button></div>
+      </div>
+      <div class="info" aria-live="polite">
+        <div class="count" id="dlgCount">0 / 10 megtalálva</div>
+        <div id="dlgBody"><p class="empty">Az első kifejezésnél megjelenik, melyik lelki folyamatról van szó.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Miért -->
+<section class="slide" data-title="Miért a lélekkel magyarázunk?">
+  <div class="wrap">
+    <div class="top">
+      <h2>A viselkedést a lelki folyamatokból magyarázzuk</h2>
+      <p>Péter és Judit is ezt tette. Ez a képesség háromféleképpen különleges. Nyisd ki őket!</p>
+    </div>
+    <div class="acc" id="acc">
+      <div class="acc-item"><button class="acc-q" aria-expanded="false">Igen absztrakt és összetett</button>
+        <div class="acc-a" hidden>A gondolatokat, emlékeket és érzéseket nem látjuk, csak a viselkedést. A lelki folyamatokra következtetnünk kell, és sok mindent egyszerre kell észben tartanunk.</div></div>
+      <div class="acc-item"><button class="acc-q" aria-expanded="false">Elsajátítása nagyon korán megkezdődik</button>
+        <div class="acc-a" hidden>Már az emberi fejlődés korai szakaszában tanulni kezdjük, hogy másoknak is vannak érzéseik, emlékeik és szándékaik.</div></div>
+      <div class="acc-item"><button class="acc-q" aria-expanded="false">Összehangolja a társas helyzeteket és cselekvéseket</button>
+        <div class="acc-a" hidden>Judit bocsánatot kér, Péter megvigasztalná Marit. Mindketten a másik lelki állapotából indulnak ki, így tudnak együtt működni.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Egész és részek -->
+<section class="slide" data-title="A lélek mint egész">
+  <div class="wrap hero" style="grid-template-columns:1fr">
+    <div class="top" style="text-align:center;margin-bottom:0">
+      <h2>A lélek mint egész</h2>
+      <p style="margin-inline:auto" id="vennText">Egyetlen, összefüggő egész. De alkotóelemeire bonthatjuk.</p>
+    </div>
+    <div class="venn" id="venn" style="margin:0 auto" role="img" aria-label="Három átfedő kör, amely három csoportra bontható">
+      <i class="v1"></i><i class="v2"></i><i class="v3"></i>
+      <span class="vl" style="left:0">Kognitív-szenzoriális</span>
+      <span class="vl" style="left:103px">Magasabb rendű értelmi</span>
+      <span class="vl" style="left:206px">Szabályozó</span>
+    </div>
+    <p style="text-align:center"><button class="btn primary" id="vennBtn">Bontsd részekre</button></p>
+  </div>
+</section>
+
+<!-- 5. Csoportosítás 1 -->
+<section class="slide" data-title="Első csoportosítás">
+  <div class="wrap">
+    <div class="top"><h2>Három csoport</h2><p>Válassz egy csoportot, és nézd meg, mi tartozik bele.</p></div>
+    <div class="seg" role="tablist" id="tabs"></div>
+    <p class="grp-note" id="tabNote"></p>
+    <div class="rows" id="tabRows"></div>
+  </div>
+</section>
+
+<!-- 6. Két csoportosítás -->
+<section class="slide" data-title="Másfajta csoportosítás">
+  <div class="wrap">
+    <div class="top"><h2>Ugyanazok a folyamatok, kétféle csoportosításban</h2></div>
+    <div class="toggle" role="group" aria-label="Csoportosítás">
+      <button aria-pressed="true" data-m="0">1. csoportosítás</button>
+      <button aria-pressed="false" data-m="1">2. csoportosítás</button>
+    </div>
+    <div class="board" id="board"></div>
+    <p class="cap" id="cap"></p>
+  </div>
+</section>
+
+<!-- 7. Játék -->
+<section class="slide" data-title="Kvíz">
+  <div class="wrap game">
+    <div class="top"><h2>Melyik csoportba tartozik?</h2></div>
+    <div class="gq" id="gq"></div>
+  </div>
+</section>
+
+<!-- 8. Összefoglalás -->
+<section class="slide" data-title="Összefoglalás">
+  <div class="wrap">
+    <div class="top"><h2>Amit érdemes megjegyezni</h2></div>
+    <ul class="sum">
+      <li class="g1"><span>A lélek <b>egész</b>, de alkotóelemeire bonthatjuk. A viselkedést a lelki folyamatokból magyarázzuk.</span></li>
+      <li class="g0"><span><b>1. csoportosítás:</b> kognitív-szenzoriális (érzékelés, észlelés, képzetek), magasabb rendű értelmi (gondolkodás, emlékezet, képzelet, nyelv) és szabályozó folyamatok (motiváció, akarat, érzelmek, figyelem).</span></li>
+      <li class="g2"><span><b>2. csoportosítás:</b> megismerő jellegű, érzelmi (érzelmek, motiváció) és motoros válaszok (reflexek, ösztönök, készségek, akarat, figyelem).</span></li>
+    </ul>
+    <p style="margin-top:1.4rem"><button class="btn" data-go="0">Vissza az elejére</button></p>
+  </div>
+</section>
+
+</main>
+
+<nav class="bar" aria-label="Lapozás">
+  <button class="nav" id="prev">Előző</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav" id="next">Következő</button>
+</nav>
+
 <script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- adatok ---------- */
+  var GROUPS=[
+    {n:"Kognitív-szenzoriális folyamatok",s:"a)",note:"Az információ bejövetele és első feldolgozása."},
+    {n:"Magasabb rendű értelmi folyamatok",s:"b)",note:"A bejött információ feldolgozása, tárolása, átalakítása."},
+    {n:"Szabályozó folyamatok",s:"c)",note:"A működés és a viselkedés irányítása."}
+  ];
+  var PROCS=[
+    {n:"érzékelés",a:0,b:0,g:"Az ingerek felfogása az érzékszervekkel: fény, hang, érintés."},
+    {n:"észlelés",a:0,b:0,g:"A tárgyak és helyzetek egészének felismerése, jelentéssel."},
+    {n:"képzetek",a:0,b:0,g:"A tapasztalt dolgok belső képei, amikor már nincsenek jelen."},
+    {n:"gondolkodás",a:1,b:0,g:"Következtetés, problémamegoldás, a tudás feldolgozása."},
+    {n:"emlékezet",a:1,b:0,g:"Az élmények megőrzése és felidézése."},
+    {n:"képzelet",a:1,b:0,g:"Új képek, ötletek, helyzetek létrehozása."},
+    {n:"nyelv",a:1,b:0,g:"Jelrendszer a közlésre és a gondolatok kifejezésére."},
+    {n:"motiváció",a:2,b:1,g:"Ami elindítja és fenntartja a cselekvést."},
+    {n:"akarat",a:2,b:2,g:"A cél tudatos követése, akadályok ellenére is."},
+    {n:"érzelmek",a:2,b:1,g:"Az átélt viszonyulás a dolgokhoz és helyzetekhez."},
+    {n:"figyelem",a:2,b:2,g:"A tudat irányítása és összpontosítása valamire."},
+    {n:"reflexek",a:3,b:2,g:"Gyors, öntudatlan válaszok ingerekre."},
+    {n:"ösztönök",a:3,b:2,g:"Veleszületett viselkedési minták."},
+    {n:"készségek",a:3,b:2,g:"Gyakorlással automatizált cselekvések."}
+  ];
+
+  /* ---------- lapozás ---------- */
+  var slides=$$('.slide'), cur=0, dotsEl=$('#dots'), prev=$('#prev'), next=$('#next');
+  slides.forEach(function(s,i){
+    var b=document.createElement('button'); b.className='dot';
+    b.setAttribute('aria-label','Dia '+(i+1)+': '+s.dataset.title);
+    b.addEventListener('click',function(){go(i)}); dotsEl.appendChild(b);
+  });
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    slides[cur].classList.remove('active'); cur=i;
+    slides[cur].classList.add('active'); slides[cur].scrollTop=0;
+    $$('.dot').forEach(function(d,k){ if(k===cur) d.setAttribute('aria-current','true'); else d.removeAttribute('aria-current'); });
+    prev.disabled=cur===0; next.disabled=cur===slides.length-1;
+  }
+  prev.addEventListener('click',function(){go(cur-1)});
+  next.addEventListener('click',function(){go(cur+1)});
+  $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){go(+b.dataset.go)})});
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown') go(cur+1);
+    else if(e.key==='ArrowLeft'||e.key==='PageUp') go(cur-1);
+  });
+  var tx=0,ty=0;
+  $('#stage').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+  $('#stage').addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>70 && Math.abs(dy)<45){ go(cur+(dx<0?1:-1)); }
+  },{passive:true});
+  go(0);
+
+  /* ---------- 2. párbeszéd ---------- */
+  var TERMS={
+    beszeltel:{p:"nyelv, beszéd",g:1,t:"A beszéd a nyelv használata: Péter azt kérdezi, volt-e közlés Judit és Mari között."},
+    mondta:{p:"nyelv, beszéd",g:1,t:"Mari szavakkal közölte a szándékát (hogy beugrik). A nyelv a gondolatok és szándékok közlésének eszköze."},
+    lattad:{p:"észlelés",g:0,t:"Péter szerint Judit észlelte Marit: ott ment el előtte a portánál."},
+    emlekezet:{p:"emlékezet",g:1,t:"A látott jelenet nem idézhető fel. Ez az emlékezet működése, vagy éppen kudarca."},
+    haragudj:{p:"érzelmek",g:2,t:"Judit azt feltételezi, hogy Péter haragszik rá, és bocsánatot kér. Az érzelmek rendezik a helyzetet."},
+    tortent:{p:"gondolkodás",g:1,t:"Judit nem látja az okot, de következtet rá: feltevést alkot Mari viselkedéséről."},
+    rosszkedvu:{p:"érzelmek",g:2,t:"Judit Mari hangulatát olvassa le a viselkedéséről. Az érzelmi állapot a külső jelekből észlelhető."},
+    nemjon:{p:"gondolkodás",g:1,t:"Péter az eddigiekből következtet arra, mit fog Mari tenni."},
+    vigasz:{p:"motiváció, akarat",g:2,t:"Szándék és cél: Péter el akarja érni, hogy Mari jobban legyen. Ez indítja majd a cselekvést."},
+    erzekeny:{p:"érzelmek",g:2,t:"Mari tartós érzelmi jellemzőjéről szól, és ezzel magyarázza a rosszkedvét."}
+  };
+  var found={}, total=Object.keys(TERMS).length;
+  var gnames=["kognitív-szenzoriális","magasabb rendű értelmi","szabályozó"];
+  $$('.term').forEach(function(el){
+    el.addEventListener('click',function(){
+      var k=el.dataset.k, d=TERMS[k];
+      el.classList.add('found','g'+d.g); el.setAttribute('data-proc',d.p);
+      found[k]=1; var n=Object.keys(found).length;
+      $('#dlgCount').textContent=n+' / '+total+' megtalálva';
+      var done = n===total ? '<p><b>Mind a '+total+' megvan!</b> A hétköznapi beszélgetésben is végig lelki folyamatokról volt szó.</p>' : '';
+      $('#dlgBody').innerHTML='<span class="chip g'+d.g+'">'+d.p+'</span><p>'+d.t+'</p>'+done;
+    });
+  });
+
+  /* ---------- 3. harmonika ---------- */
+  $$('.acc-q').forEach(function(q){
+    q.addEventListener('click',function(){
+      var open=q.getAttribute('aria-expanded')==='true';
+      $$('.acc-q').forEach(function(o){o.setAttribute('aria-expanded','false'); o.nextElementSibling.hidden=true;});
+      if(!open){q.setAttribute('aria-expanded','true'); q.nextElementSibling.hidden=false;}
+    });
+  });
+
+  /* ---------- 4. bontás ---------- */
+  var venn=$('#venn'), vb=$('#vennBtn'), vt=$('#vennText');
+  vb.addEventListener('click',function(){
+    var s=venn.classList.toggle('split');
+    vb.textContent=s?'Illeszd össze':'Bontsd részekre';
+    vt.textContent=s?'Három csoport. Külön tanulmányozhatók, de a lélekben mindig együtt működnek.':'Egyetlen, összefüggő egész. De alkotóelemeire bonthatjuk.';
+  });
+
+  /* ---------- 5. fülek ---------- */
+  var tabs=$('#tabs'), tabBtns=[];
+  GROUPS.forEach(function(g,i){
+    var b=document.createElement('button'); b.className='tab g'+i; b.setAttribute('role','tab');
+    b.textContent=g.s+' '+g.n.replace(' folyamatok','');
+    b.addEventListener('click',function(){showTab(i)}); tabs.appendChild(b); tabBtns.push(b);
+  });
+  function showTab(i){
+    tabBtns.forEach(function(b,k){b.setAttribute('aria-selected',k===i?'true':'false')});
+    $('#tabNote').textContent=GROUPS[i].n+'. '+GROUPS[i].note;
+    var h='';
+    PROCS.filter(function(p){return p.a===i}).forEach(function(p){h+='<div class="row"><b>'+p.n+'</b><span>'+p.g+'</span></div>'});
+    $('#tabRows').innerHTML=h;
+  }
+  showTab(0);
+
+  /* ---------- 6. tábla (FLIP) ---------- */
+  var board=$('#board'), bins=[], chips=[];
+  var TITLES=[
+    [["a) Kognitív-szenzoriális","folyamatok"],["b) Magasabb rendű","értelmi folyamatok"],["c) Szabályozó","folyamatok"],["Ebben a felosztásban","nem szerepel"]],
+    [["Megismerő jellegűek","az a) és b) együtt"],["Érzelmi folyamatok",""],["Motoros válaszok",""],["",""]]
+  ];
+  var CAPS=[
+    "Három csoport a feladatuk szerint. A reflexek, ösztönök és készségek itt nem kapnak helyet.",
+    "A színek az 1. csoportosítást őrzik. Figyeld meg: a szabályozó folyamatok szétszóródtak. A motiváció az érzelmekhez, az akarat és a figyelem a motoros válaszokhoz került."
+  ];
+  for(var i=0;i<4;i++){
+    var bin=document.createElement('div'); bin.className='bin'+(i===3?' out':'');
+    bin.innerHTML='<h3></h3><div class="cs"></div>'; board.appendChild(bin); bins.push(bin);
+  }
+  PROCS.forEach(function(p){
+    var c=document.createElement('span'); c.className='chip g'+p.a; c.textContent=p.n; c._p=p; chips.push(c);
+  });
+  var mode=0;
+  function place(m,animate){
+    var first=new Map();
+    if(animate) chips.forEach(function(c){first.set(c,c.getBoundingClientRect())});
+    chips.forEach(function(c){ var t=m===0?c._p.a:c._p.b; $('.cs',bins[t]).appendChild(c); });
+    bins.forEach(function(b,i){
+      var t=TITLES[m][i]; var h=$('h3',b); h.textContent=t[0];
+      if(t[1]){var s=document.createElement('small'); s.textContent=t[1]; h.appendChild(s);}
+    });
+    $('#cap').textContent=CAPS[m];
+    if(animate && !reduce){
+      chips.forEach(function(c){
+        var f=first.get(c), l=c.getBoundingClientRect(), dx=f.left-l.left, dy=f.top-l.top;
+        if(dx||dy) c.animate([{transform:'translate('+dx+'px,'+dy+'px)'},{transform:'none'}],{duration:560,easing:'cubic-bezier(.2,.8,.2,1)'});
+      });
+    }
+  }
+  place(0,false);
+  $$('.toggle button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=+b.dataset.m; if(m===mode) return; mode=m;
+      $$('.toggle button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});
+      place(m,true);
+    });
+  });
+
+  /* ---------- 7. játék ---------- */
+  var GAME=PROCS.filter(function(p){return p.a<3});
+  var order=[], idx=0, score=0, gq=$('#gq');
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+  function start(){order=shuffle(GAME.slice()); idx=0; score=0; render();}
+  function render(){
+    if(idx>=order.length){
+      var msg = score>=order.length-1 ? 'Szinte hibátlan!' : score>=7 ? 'Jó alap, még finomíthatod.' : 'Nézd át újra a csoportokat, és próbáld újra.';
+      gq.innerHTML='<div class="score">'+score+' / '+order.length+'</div><p style="margin:.8rem 0 1.2rem">'+msg+'</p><button class="btn primary" id="again">Újra</button>';
+      $('#again').addEventListener('click',start); return;
+    }
+    var p=order[idx];
+    var h='<div class="gprog"><span>'+(idx+1)+' / '+order.length+'</span><span>Pont: '+score+'</span></div><div class="gword">'+p.n+'</div><div class="opts">';
+    GROUPS.forEach(function(g,i){h+='<button class="opt g'+i+'" data-i="'+i+'">'+g.s+' '+g.n.replace(' folyamatok','')+'</button>'});
+    h+='</div><div class="fb" id="fb" aria-live="polite"></div>';
+    gq.innerHTML=h;
+    $$('.opt',gq).forEach(function(b){
+      b.addEventListener('click',function(){
+        var i=+b.dataset.i, ok=i===p.a; if(ok) score++;
+        $$('.opt',gq).forEach(function(o){
+          o.disabled=true; var oi=+o.dataset.i;
+          if(oi===p.a) o.classList.add('right'); else if(o===b) o.classList.add('wrong');
+        });
+        $('#fb').innerHTML='<b>'+(ok?'Helyes.':'Nem egészen.')+'</b> '+p.n.charAt(0).toUpperCase()+p.n.slice(1)+': '+p.g.charAt(0).toLowerCase()+p.g.slice(1)+' <button class="btn primary" id="nx" style="margin-top:.8rem">'+(idx+1>=order.length?'Eredmény':'Tovább')+'</button>';
+        $('#nx').addEventListener('click',function(){idx++;render()});
+        $('#nx').focus();
+      });
+    });
+  }
+  start();
+})();
+</script>
+</body>
+</html>
+
+  <script>
 const LESSONS = {
   bevezeto: `<!doctype html>
 <html lang="hu">
